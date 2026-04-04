@@ -112,6 +112,29 @@ public class HotelReservationSystem {
     }
 
     private static void getRoomNumber(Connection connection, Scanner scanner){
+        System.out.println("Enter reservation ID: ");
+        int reservationId = scanner.nextInt();
+        System.out.println("Enter guest name: ");
+        String guestName = scanner.next();
+
+        String sql = "select room_number from reservation" + 
+        " where reservation_id = " + reservationId + 
+        " and guest_name= '"+ guestName +"'" ;
+
+        try (Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql)) {
+
+                if(resultSet.next()){
+                    int roomNumber = resultSet.getInt("room_number");
+                    System.out.println("Room number for reservation id: "+reservationId+" and guest "+guestName+" is: "+roomNumber);
+                } else{
+                    System.out.println("No reservation for this guest!");
+                }
+
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -127,3 +150,4 @@ public class HotelReservationSystem {
 
     }
 }
+ 
