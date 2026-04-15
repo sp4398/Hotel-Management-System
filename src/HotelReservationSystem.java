@@ -139,11 +139,49 @@ public class HotelReservationSystem {
     }
 
     private static void UpdateReservation(Connection connection, Scanner scanner){
+        try {
+            System.out.println("Enter reservation ID to update");
+            int reservationId = scanner.nextInt();
+            scanner.nextLine();
 
+            if(!reservationExists(connection, reservationId)){
+                System.out.println("Reservation not found for given ID.");
+                return;
+            }
+
+            System.out.println("Enter new guest name: ");
+            String newGuestName = scanner.nextLine();
+            System.out.println("Enter new room number: ");
+            int newRoomNumber = scanner.nextInt();
+            System.out.println("Enter new contact number");
+            String newContactNumber = scanner.next();
+
+            String sql = "UPDATE reservations SET guest_name = '" + newGuestName + "', " +
+             "room_number = " + newRoomNumber + ", " +
+             "contact_number = '" + newContactNumber + "' " +
+             "WHERE reservation_id = " + reservationId;
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     private static void deleteReservation(Connection connection, Scanner scanner){
 
+    }
+
+    private static boolean reservationExists(Connection connection, int reservationId){
+        try {
+            String sql = "SELECT reservation_id from reservations where reservation_id = "+reservationId;
+
+            try (Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sql);){
+                    return resultSet.next();
+                }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } 
     }
 
     private static void exit(){
