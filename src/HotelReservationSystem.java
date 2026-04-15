@@ -156,14 +156,26 @@ public class HotelReservationSystem {
             System.out.println("Enter new contact number");
             String newContactNumber = scanner.next();
 
-            String sql = "UPDATE reservations SET guest_name = '" + newGuestName + "', " +
+            String sql = "UPDATE reservation SET guest_name = '" + newGuestName + "', " +
              "room_number = " + newRoomNumber + ", " +
              "contact_number = '" + newContactNumber + "' " +
              "WHERE reservation_id = " + reservationId;
 
-        } catch (Exception e) {
-            // TODO: handle exception
+
+            Statement statement = connection.createStatement();
+            int affectedRows = statement.executeUpdate(sql);
+
+            if (affectedRows>0){
+                System.out.println("Update Successful!");
+            } else{
+                System.out.println("Update Failed!");
+            }
+
+        
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
     }
 
     private static void deleteReservation(Connection connection, Scanner scanner){
@@ -172,7 +184,7 @@ public class HotelReservationSystem {
 
     private static boolean reservationExists(Connection connection, int reservationId){
         try {
-            String sql = "SELECT reservation_id from reservations where reservation_id = "+reservationId;
+            String sql = "SELECT reservation_id from reservation where reservation_id = "+reservationId;
 
             try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(sql);){
