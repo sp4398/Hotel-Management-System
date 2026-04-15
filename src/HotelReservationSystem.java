@@ -13,11 +13,11 @@ public class HotelReservationSystem {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         try {
+            Scanner scanner = new Scanner(System.in);
             Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             while(true){
                 System.out.println();
-                System.out.println("Hotel Management System");
-                Scanner scanner = new Scanner(System.in);
+                System.out.println("Hotel Reservation System");
                 System.out.println("1. Reserve a room");
                 System.out.println("2. View Reservations");
                 System.out.println("3. Get room number");
@@ -26,6 +26,7 @@ public class HotelReservationSystem {
                 System.out.println("0. Exit");
                 System.out.println("Choose an option: ");
                 int choice = scanner.nextInt();
+                scanner.nextLine();
                 switch (choice) {
                     case 1: 
                         reserveRoom(connection, scanner);
@@ -49,7 +50,7 @@ public class HotelReservationSystem {
                     case 0: 
                         exit();
                         scanner.close();
-                        break;
+                        return;
                 
                     default:
                         System.out.println("Invalid Choice. Try again");
@@ -58,9 +59,9 @@ public class HotelReservationSystem {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        //  catch(InterruptedException e){
-        //     throw new RuntimeException(e);
-        // }
+         catch(InterruptedException e){
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -68,10 +69,13 @@ public class HotelReservationSystem {
         System.out.println("Enter guest name: ");
         String guestName = scanner.next();
         scanner.nextLine();
+
         System.out.println("Enter room number: ");
         int roomNumber = scanner.nextInt();
+        scanner.nextLine();
+
         System.out.println("Enter contact number: ");
-        String contact = scanner.next();
+        String contact = scanner.nextLine();
 
         String sql = "Insert into reservation (guest_name, room_number, contact_number)" +
              "values('"+guestName+"',"+roomNumber+", '"+contact+"')";
@@ -99,7 +103,7 @@ public class HotelReservationSystem {
                 
                 while(resultSet.next()){
                     int reservationID = resultSet.getInt("reservation_id");
-                    String guestName = resultSet.getNString("guest_name");
+                    String guestName = resultSet.getString("guest_name");
                     int roomNumber = resultSet.getInt("room_number");
                     String contactNumber = resultSet.getString("contact_number");
                     String reservationDate = resultSet.getString("reservation_date").toString();
@@ -114,8 +118,10 @@ public class HotelReservationSystem {
     private static void getRoomNumber(Connection connection, Scanner scanner){
         System.out.println("Enter reservation ID: ");
         int reservationId = scanner.nextInt();
+        scanner.nextLine();
+
         System.out.println("Enter guest name: ");
-        String guestName = scanner.next();
+        String guestName = scanner.nextLine();
 
         String sql = "select room_number from reservation" + 
         " where reservation_id = " + reservationId + 
@@ -151,10 +157,13 @@ public class HotelReservationSystem {
 
             System.out.println("Enter new guest name: ");
             String newGuestName = scanner.nextLine();
+
             System.out.println("Enter new room number: ");
             int newRoomNumber = scanner.nextInt();
+            scanner.nextLine();
+
             System.out.println("Enter new contact number");
-            String newContactNumber = scanner.next();
+            String newContactNumber = scanner.nextLine();
 
             String sql = "UPDATE reservation SET guest_name = '" + newGuestName + "', " +
              "room_number = " + newRoomNumber + ", " +
@@ -183,6 +192,7 @@ public class HotelReservationSystem {
         try {
             System.out.println("Enter reservation ID to delete: ");
             int reservationId = scanner.nextInt();
+            scanner.nextLine();
 
             if(!reservationExists(connection, reservationId)){
                 System.out.println("Reservation not found for given ID.");
@@ -221,7 +231,16 @@ public class HotelReservationSystem {
         } 
     }
 
-    private static void exit(){
+    public static void exit() throws InterruptedException{
+        System.out.println("Exiting System");
+        int i = 5;
+        while(i != 0){
+            System.out.print(".");
+            Thread.sleep(450);
+            i--;
+        }
+        System.out.println();
+        System.out.println("Thank you for using Hotel Reservation System");
 
     }
 }
